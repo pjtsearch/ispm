@@ -1,4 +1,3 @@
-use crate::utils::cd::cd;
 use crate::shcmd::ShCmd;
 use crate::traits::runnable::RunErr;
 use crate::traits::runnable::Runnable;
@@ -36,7 +35,12 @@ pub struct Pkg {
 
 impl Pkg {
     pub fn install(&mut self,working_dir:&str) -> Result<(), RunErr>{
-        self.source.run(working_dir.to_string());
-        self.build.run(format!("{}/src",working_dir))
+        let mut results:Vec<Result<(),RunErr>> = Vec::new();
+        results.push(self.source.run(working_dir.to_string()));
+        results.push(self.build.run(format!("{}/src",working_dir)));
+        match results.iter().find(|res|res.is_err()) {
+            Some(error) => Err(error.clone().err().unwrap()),
+            None => Ok(())
+        }
     }
 }
