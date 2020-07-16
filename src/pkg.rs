@@ -16,8 +16,9 @@ pub struct Source {
 
 impl Runnable for Source {
     fn run(&mut self) -> Result<(), RunErr>{
-        cd(&self.working_dir);
         let mut cmds = Vec::new();
+        cmds.push(ShCmd::new(format!("rm -rf {}/*",self.working_dir)));
+        cmds.push(ShCmd::new(format!("cd {}",self.working_dir)));
         cmds.push(ShCmd::new(format!("wget -O ./src.archive {}",self.url)));
         match &self.variant {
             SourceVariant::TAR => 
@@ -37,7 +38,7 @@ pub struct Pkg {
 
 impl Runnable for Pkg {
     fn run(&mut self) -> Result<(), RunErr>{
-        self.source.run()
-        // self.build.run()
+        self.source.run();
+        self.build.run()
     }
 }

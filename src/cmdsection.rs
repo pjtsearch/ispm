@@ -8,13 +8,20 @@ pub struct CmdSection {
 
 impl Runnable for CmdSection {
     fn run(&mut self) -> Result<(), RunErr> {
-        let mut results = self.commands.iter_mut().map(|cmd| {
-            cmd.run()
-        });
-        match results.find(|result| result.is_err()) {
-            Some(error) => error,
-            None => Ok(())
-        }
+        // let mut results = self.commands.iter_mut().map(|cmd| {
+        //     cmd.run()
+        // });
+        // match results.find(|result| result.is_err()) {
+        //     Some(error) => error,
+        //     None => Ok(())
+        // }
+        let cmd = self.commands.iter()
+        .map(|cmd|cmd.command.clone()).collect::<Vec<String>>()
+        .join(";\n");
+
+        println!("RUNNING \"{}\"",cmd);
+
+        ShCmd::new(cmd).run()
     }
 }
 

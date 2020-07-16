@@ -34,16 +34,16 @@ fn main() {
     Pkg {
         source:Source {url:source.to_string(),variant:SourceVariant::TAR,working_dir:"./tmp".to_string()},
         build: CmdSection::new(
-            build.clone().iter().map(|cmd|ShCmd::new(cmd.as_str().unwrap().to_string())).rev().collect()
+            build.clone().iter().map(|cmd|ShCmd::new(cmd.as_str().unwrap().to_string())).collect()
         ),
         pre_source: Some(CmdSection::new(
-            pre_source.clone().unwrap().iter().map(|cmd|ShCmd::new(cmd.as_str().unwrap().to_string())).rev().collect()
+            pre_source.clone().unwrap().iter().map(|cmd|ShCmd::new(cmd.as_str().unwrap().to_string())).collect()
         )),
         uninstall: Some(CmdSection::new(
-            uninstall.clone().unwrap().iter().map(|cmd|ShCmd::new(cmd.as_str().unwrap().to_string())).rev().collect()
+            uninstall.clone().unwrap().iter().map(|cmd|ShCmd::new(cmd.as_str().unwrap().to_string())).collect()
         )),
         version:"1".to_string()
-    }.run();
+    }.run().unwrap();
 }
 
 fn setup_source(source:&str) {
