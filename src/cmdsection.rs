@@ -19,7 +19,7 @@ impl Runnable for CmdSection {
         .map(|cmd|cmd.command.clone()).collect::<Vec<String>>()
         .join(";\n");
 
-        println!("RUNNING \"{}\"",cmd);
+        println!("### RUNNING \n{} \n###\n",cmd);
 
         ShCmd::new(cmd).run()
     }

@@ -8,8 +8,7 @@ pub struct ShCmd {
 
 impl Runnable for ShCmd {
     fn run(&mut self) -> Result<(), RunErr> {
-        let output = Command::new("sh").arg("-c").arg(self.command.clone()).output();
-        println!("{:?}",output);
+        let output = Command::new("sh").arg("-c").arg(self.command.clone()).status();
         match output {
             Ok(_output) => Ok(()),
             Err(error) => Err(RunErr{message:error.to_string()})
