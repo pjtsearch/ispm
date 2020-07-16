@@ -1,3 +1,4 @@
+use crate::utils::cd::cd;
 use crate::shcmd::ShCmd;
 use crate::traits::runnable::RunErr;
 use crate::traits::runnable::Runnable;
@@ -8,12 +9,14 @@ pub enum SourceVariant {
 }
 
 pub struct Source {
-    url: String,
-    variant: SourceVariant
+    pub url: String,
+    pub variant: SourceVariant,
+    pub working_dir: String
 }
 
 impl Runnable for Source {
     fn run(&mut self) -> Result<(), RunErr>{
+        cd(&self.working_dir);
         let mut cmds = Vec::new();
         cmds.push(ShCmd::new(format!("wget -O ./src.archive {}",self.url)));
         match &self.variant {
@@ -34,6 +37,7 @@ pub struct Pkg {
 
 impl Runnable for Pkg {
     fn run(&mut self) -> Result<(), RunErr>{
-        self.build.run()
+        self.source.run()
+        // self.build.run()
     }
 }
