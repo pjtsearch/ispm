@@ -11,20 +11,18 @@ pub enum SourceVariant {
 pub struct Source {
     pub url: String,
     pub variant: SourceVariant,
-    pub working_dir: String
 }
 
 impl Runnable for Source {
-    fn run(&mut self) -> Result<(), RunErr>{
+    fn run(&mut self,dir:String) -> Result<(), RunErr>{
         let mut cmds = Vec::new();
-        cmds.push(ShCmd::new(format!("rm -rf {}/*",self.working_dir)));
-        cmds.push(ShCmd::new(format!("cd {}",self.working_dir)));
+        cmds.push(ShCmd::new(format!("rm -rf ./*")));
         cmds.push(ShCmd::new(format!("wget -O ./src.archive {}",self.url)));
         match &self.variant {
             SourceVariant::TAR => 
                 cmds.push(ShCmd::new("tar -xf ./src.archive --one-top-level=./src  --strip-components=1".to_string()))
         };
-        CmdSection::new(cmds).run()
+        CmdSection::new(cmds).run(dir)
     }
 }
 
@@ -36,9 +34,9 @@ pub struct Pkg {
     pub uninstall: Option<CmdSection>,
 }
 
-impl Runnable for Pkg {
-    fn run(&mut self) -> Result<(), RunErr>{
-        self.source.run();
-        self.build.run()
+impl Pkg {
+    pub fn install(&mut self,working_dir:&str) -> Result<(), RunErr>{
+        self.source.run(working_dir.to_string());
+        self.build.run(format!("{}/src",working_dir))
     }
 }

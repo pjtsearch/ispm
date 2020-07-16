@@ -23,16 +23,8 @@ fn main() {
     let source = pkg["source"].as_str().expect("source not found, and source is a required field");
     let build = pkg["build"].as_vec().expect("build not found, and build is a required field");
     let uninstall = pkg["uninstall"].as_vec();
-    // cd("./tmp");
-    // match pre_source {
-    //     Some(cmd) => run_section(cmd),
-    //     None => ()
-    // }
-    // setup_source(source);
-    // cd("./src");
-    // run_section(build);
     Pkg {
-        source:Source {url:source.to_string(),variant:SourceVariant::TAR,working_dir:"./tmp".to_string()},
+        source:Source {url:source.to_string(),variant:SourceVariant::TAR},
         build: CmdSection::new(
             build.clone().iter().map(|cmd|ShCmd::new(cmd.as_str().unwrap().to_string())).collect()
         ),
@@ -43,7 +35,7 @@ fn main() {
             uninstall.clone().unwrap().iter().map(|cmd|ShCmd::new(cmd.as_str().unwrap().to_string())).collect()
         )),
         version:"1".to_string()
-    }.run().unwrap();
+    }.install("./tmp").unwrap();
 }
 
 fn setup_source(source:&str) {
