@@ -12,8 +12,8 @@ pub struct Source {
     pub variant: SourceVariant,
 }
 
-impl Runnable for Source {
-    fn run(&mut self,dir:String) -> Result<(), RunErr>{
+impl Source {
+    fn download(&mut self,dir:String) -> Result<(), RunErr>{
         let mut cmds = Vec::new();
         cmds.push(ShCmd::new(format!("rm -rf ./*")));
         cmds.push(ShCmd::new(format!("wget -O ./src.archive {}",self.url)));
@@ -35,12 +35,8 @@ pub struct Pkg {
 
 impl Pkg {
     pub fn install(&mut self,working_dir:&str) -> Result<(), RunErr>{
-        let mut results:Vec<Result<(),RunErr>> = Vec::new();
-        results.push(self.source.run(working_dir.to_string()));
-        results.push(self.build.run(format!("{}/src",working_dir)));
-        match results.iter().find(|res|res.is_err()) {
-            Some(error) => Err(error.clone().err().unwrap()),
-            None => Ok(())
-        }
+        self.source.download(working_dir.to_string())?;
+        self.build.run(format!("{}/src",working_dir))?;
+        Ok(())
     }
 }
