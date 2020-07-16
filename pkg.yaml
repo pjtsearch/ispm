@@ -1,0 +1,12 @@
+version: 1.0.0
+source: "https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.37.tar.bz2"
+pre_source:
+  - echo "pre_source"
+build:
+  - ls
+  - ./configure --prefix=/usr 
+  - make
+  - sudo su
+
+uninstall:
+  - echo "uninstall"
