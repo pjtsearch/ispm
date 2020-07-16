@@ -4,9 +4,8 @@ pre_source:
   - echo "pre_source"
 build:
   - ls
-  - ./configure --prefix=/usr 
-  - make
-  - sudo su
+  - ./configure --prefix=/usr && make
+  - sudo su -c "ls"
 
 uninstall:
   - echo "uninstall"

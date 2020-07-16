@@ -1,9 +1,13 @@
 extern crate yaml_rust;
-#[macro_use] extern crate shell;
 use yaml_rust::{YamlLoader};
 use std::fs;
 use std::env;
 use std::path::Path;
+use std::process::Command;
+mod pkg;
+mod cmdsection;
+mod shcmd;
+mod traits;
 
 fn main() {
     let pkg_str:&str = &fs::read_to_string("./pkg.yaml").expect("Could not read pkg.yaml");
@@ -12,13 +16,13 @@ fn main() {
     let source = pkg["source"].as_str().expect("source not found, and source is a required field");
     let build = pkg["build"].as_vec().expect("build not found, and build is a required field");
     let uninstall = pkg["uninstall"].as_vec();
-    env::set_current_dir(&Path::new("./tmp"));
+    cd("./tmp");
     match pre_source {
         Some(cmd) => run_section(cmd),
         None => ()
     }
     setup_source(source);
-    env::set_current_dir(&Path::new("./src"));
+    cd("./src");
     run_section(build);
 }
 
@@ -35,5 +39,13 @@ fn run_section(commands:&std::vec::Vec<yaml_rust::Yaml>) {
 }
 
 fn run(command:&str) {
-    cmd!(command).run().expect(&format!("Error running command {}",command));
+    Command::new("sh")
+            .arg("-c")
+            .arg(command)
+            .output()
+            .expect(&format!("Error running command {}",command));
+}
+
+fn cd (path:&str) {
+    env::set_current_dir(&Path::new(path)).expect(&format!("Could not change to directory {}",path));
 }
