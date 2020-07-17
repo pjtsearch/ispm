@@ -41,27 +41,27 @@ impl Pkg {
         self.build.as_mut().expect("build section required for install").run(&format!("{}/src",working_dir))?;
         Ok(())
     }
-    pub fn with_name(&'_ mut self,name:&str) -> &'_ mut Pkg {
+    pub fn with_name(&mut self,name:&str) -> &mut Pkg {
         self.name = Some(name.to_string());
         self
     }
-    pub fn with_version(&'_ mut self,version:&str) -> &'_ mut Pkg {
+    pub fn with_version(&mut self,version:&str) -> &mut Pkg {
         self.version = Some(version.to_string());
         self
     }
-    pub fn with_source(&'_ mut self,source:Source) -> &'_ mut Pkg {
+    pub fn with_source(&mut self,source:Source) -> &mut Pkg {
         self.source = Some(source);
         self
     }
-    pub fn with_pre_source(&'_ mut self,pre_source:ShCmd) -> &'_ mut Pkg {
+    pub fn with_pre_source(&mut self,pre_source:ShCmd) -> &mut Pkg {
         self.pre_source = Some(pre_source);
         self
     }
-    pub fn with_build(&'_ mut self,build:ShCmd) -> &'_ mut Pkg {
+    pub fn with_build(&mut self,build:ShCmd) -> &mut Pkg {
         self.build = Some(build);
         self
     }
-    pub fn with_uninstall(&'_ mut self,uninstall:ShCmd) -> &'_ mut Pkg {
+    pub fn with_uninstall(&mut self,uninstall:ShCmd) -> &mut Pkg {
         self.uninstall = Some(uninstall);
         self
     }
