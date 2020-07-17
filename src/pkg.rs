@@ -14,7 +14,7 @@ pub struct Source {
 impl Source {
     fn download(&mut self,dir:String) -> Result<(), RunErr>{
         let mut cmds = Vec::new();
-        cmds.push(ShCmd::new(format!("rm -rf ./*")));
+        cmds.push(ShCmd::new("rm -rf ./*".to_string()));
         cmds.push(ShCmd::new(format!("wget -O ./src.archive {}",self.url)));
         match &self.variant {
             SourceVariant::TAR => 
@@ -49,27 +49,27 @@ impl Pkg {
             uninstall: None
         }
     }
-    pub fn with_name<'a>(&'a mut self,name:String) -> &'a mut Pkg {
+    pub fn with_name(&'_ mut self,name:String) -> &'_ mut Pkg {
         self.name = Some(name);
         self
     }
-    pub fn with_version<'a>(&'a mut self,version:String) -> &'a mut Pkg {
+    pub fn with_version(&'_ mut self,version:String) -> &'_ mut Pkg {
         self.version = Some(version);
         self
     }
-    pub fn with_source<'a>(&'a mut self,source:Source) -> &'a mut Pkg {
+    pub fn with_source(&'_ mut self,source:Source) -> &'_ mut Pkg {
         self.source = Some(source);
         self
     }
-    pub fn with_pre_source<'a>(&'a mut self,pre_source:ShCmd) -> &'a mut Pkg {
+    pub fn with_pre_source(&'_ mut self,pre_source:ShCmd) -> &'_ mut Pkg {
         self.pre_source = Some(pre_source);
         self
     }
-    pub fn with_build<'a>(&'a mut self,build:ShCmd) -> &'a mut Pkg {
+    pub fn with_build(&'_ mut self,build:ShCmd) -> &'_ mut Pkg {
         self.build = Some(build);
         self
     }
-    pub fn with_uninstall<'a>(&'a mut self,uninstall:ShCmd) -> &'a mut Pkg {
+    pub fn with_uninstall(&'_ mut self,uninstall:ShCmd) -> &'_ mut Pkg {
         self.uninstall = Some(uninstall);
         self
     }
