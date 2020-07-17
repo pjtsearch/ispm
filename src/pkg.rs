@@ -1,3 +1,4 @@
+use crate::utils::if_some::if_some;
 use crate::shcmd::ShCmd;
 use crate::traits::runnable::RunErr;
 use crate::traits::runnable::Runnable;
@@ -63,5 +64,41 @@ impl Pkg {
     pub fn with_uninstall(&'_ mut self,uninstall:ShCmd) -> &'_ mut Pkg {
         self.uninstall = Some(uninstall);
         self
+    }
+}
+
+impl From<&yaml_rust::Yaml> for Pkg {
+    fn from(yaml:&yaml_rust::Yaml) -> Pkg {
+        let mut pkg_obj = Pkg::default();
+        let name = yaml["name"].as_str();
+        if_some(name,|name|{ 
+            pkg_obj.with_name(name.to_string()); 
+        });
+
+        let version = yaml["version"].as_str();
+        if_some(version,|version|{ 
+            pkg_obj.with_version(version.to_string()); 
+        });
+
+        let source = yaml["source"].as_str();
+        if_some(source,|source|{ 
+            pkg_obj.with_source(Source {url:source.to_string(),variant:SourceVariant::TAR}); 
+        });
+
+        let pre_source = yaml["pre_source"].as_vec();
+        if_some(pre_source,|pre_source|{ 
+            pkg_obj.with_pre_source(ShCmd::from(pre_source.iter().map(yaml_rust::Yaml::as_str).map(Option::unwrap).collect::<Vec<&str>>())); 
+        });
+
+        let build = yaml["build"].as_vec();
+        if_some(build,|build|{ 
+            pkg_obj.with_build(ShCmd::from(build.iter().map(yaml_rust::Yaml::as_str).map(Option::unwrap).collect::<Vec<&str>>()));
+        });
+
+        let uninstall = yaml["uninstall"].as_vec();
+        if_some(uninstall,|uninstall|{ 
+            pkg_obj.with_uninstall(ShCmd::from(uninstall.iter().map(yaml_rust::Yaml::as_str).map(Option::unwrap).collect::<Vec<&str>>()));
+        });
+        pkg_obj
     }
 }
