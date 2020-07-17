@@ -12,7 +12,7 @@ mod traits;
 mod utils;
 
 fn main() {
-    let mut pkg_obj = Pkg::new();
+    let mut pkg_obj = Pkg::default();
     let pkg_str:&str = &fs::read_to_string("./pkg.yaml").expect("Could not read pkg.yaml");
     let pkg = &YamlLoader::load_from_str(pkg_str).expect("Could not parse pkg")[0];
 

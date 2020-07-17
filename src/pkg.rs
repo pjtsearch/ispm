@@ -24,6 +24,7 @@ impl Source {
     }
 }
 
+#[derive(Default)]
 pub struct Pkg {
     pub name: Option<String>,
     pub version: Option<String>,
@@ -38,16 +39,6 @@ impl Pkg {
         self.source.as_mut().expect("source required for install").download(working_dir.to_string())?;
         self.build.as_mut().expect("build section required for install").run(format!("{}/src",working_dir))?;
         Ok(())
-    }
-    pub fn new() -> Pkg {
-        Pkg {
-            name: None,
-            version: None,
-            source: None,
-            pre_source: None,
-            build: None,
-            uninstall: None
-        }
     }
     pub fn with_name(&'_ mut self,name:String) -> &'_ mut Pkg {
         self.name = Some(name);
