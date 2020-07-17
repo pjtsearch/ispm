@@ -3,7 +3,8 @@ source: "https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.37.tar.bz2
 pre_source:
   - echo "pre_source"
 build:
-  - ls
-
+  - echo "build"
+install:
+  - echo "install"
 uninstall:
   - echo "uninstall"

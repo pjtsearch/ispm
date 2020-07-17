@@ -32,14 +32,21 @@ pub struct Pkg {
     pub source: Option<Source>,
     pub pre_source: Option<ShCmd>,
     pub build: Option<ShCmd>,
+    pub install: Option<ShCmd>,
     pub uninstall: Option<ShCmd>,
 }
 
 impl Pkg {
+    pub fn download(&mut self,working_dir:&str) -> Result<(), RunErr> {
+        self.source.as_mut().expect("source section required for download").download(working_dir)
+    }
+    pub fn build(&mut self,working_dir:&str) -> Result<(), RunErr> {
+        self.download(working_dir).expect("source download required for building");
+        self.build.as_mut().expect("build section required for building").run(&format!("{}/src",working_dir))
+    }
     pub fn install(&mut self,working_dir:&str) -> Result<(), RunErr>{
-        self.source.as_mut().expect("source required for install").download(working_dir)?;
-        self.build.as_mut().expect("build section required for install").run(&format!("{}/src",working_dir))?;
-        Ok(())
+        self.build(working_dir).expect("build section required for install");
+        self.install.as_mut().expect("install section required for installing").run(&format!("{}/src",working_dir))
     }
     pub fn with_name(&mut self,name:&str) -> &mut Pkg {
         self.name = Some(name.to_string());
@@ -59,6 +66,10 @@ impl Pkg {
     }
     pub fn with_build(&mut self,build:ShCmd) -> &mut Pkg {
         self.build = Some(build);
+        self
+    }
+    pub fn with_install(&mut self,build:ShCmd) -> &mut Pkg {
+        self.install = Some(build);
         self
     }
     pub fn with_uninstall(&mut self,uninstall:ShCmd) -> &mut Pkg {
@@ -93,6 +104,11 @@ impl From<&yaml_rust::Yaml> for Pkg {
         let build = yaml["build"].as_vec();
         if_some(build,|build|{ 
             pkg_obj.with_build(ShCmd::from(build.iter().map(yaml_rust::Yaml::as_str).map(Option::unwrap).collect::<Vec<&str>>()));
+        });
+
+        let install = yaml["install"].as_vec();
+        if_some(install,|install|{ 
+            pkg_obj.with_install(ShCmd::from(install.iter().map(yaml_rust::Yaml::as_str).map(Option::unwrap).collect::<Vec<&str>>()));
         });
 
         let uninstall = yaml["uninstall"].as_vec();
