@@ -1,7 +1,6 @@
 use crate::shcmd::ShCmd;
 use crate::traits::runnable::RunErr;
 use crate::traits::runnable::Runnable;
-use crate::cmdsection::CmdSection;
 
 pub enum SourceVariant {
     TAR
@@ -21,16 +20,16 @@ impl Source {
             SourceVariant::TAR => 
                 cmds.push(ShCmd::new("tar -xf ./src.archive --one-top-level=./src  --strip-components=1".to_string()))
         };
-        CmdSection::new(cmds).run(dir)
+        ShCmd::from(cmds).run(dir)
     }
 }
 
 pub struct Pkg {
     pub source: Source,
     pub version: String,
-    pub pre_source: Option<CmdSection>,
-    pub build: CmdSection,
-    pub uninstall: Option<CmdSection>,
+    pub pre_source: Option<ShCmd>,
+    pub build: ShCmd,
+    pub uninstall: Option<ShCmd>,
 }
 
 impl Pkg {

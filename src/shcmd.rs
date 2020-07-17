@@ -17,6 +17,28 @@ impl Runnable for ShCmd {
     }
 }
 
+impl std::string::ToString for ShCmd {
+    fn to_string(&self) -> String {
+        self.command.clone()
+    }
+}
+
+impl From<Vec<ShCmd>> for ShCmd {
+    fn from(commands:Vec<ShCmd>) -> ShCmd {
+        let command = commands.iter()
+            .map(|cmd|cmd.command.clone()).collect::<Vec<String>>()
+            .join(";\n");
+        ShCmd {command}
+    }
+}
+
+impl From<Vec<&str>> for ShCmd {
+    fn from(commands:Vec<&str>) -> ShCmd {
+        let command = commands.join(";\n");
+        ShCmd {command}
+    }
+}
+
 impl ShCmd {
     pub fn new(command:String) -> ShCmd {
         ShCmd {command}
