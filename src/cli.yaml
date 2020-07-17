@@ -1,0 +1,21 @@
+name: ispm
+version: "0.1.0"
+author: Peter PJT <pjtsignups@gmail.com>
+about: A simple package manager
+args:
+    - working_dir:
+        short: w
+        long: wdir
+        value_name: DIR
+        help: Sets a custom working directory
+        takes_value: true
+    - INPUT:
+        help: Sets the input file to use
+        index: 1
+    - verbose:
+        short: v
+        multiple: true
+        help: Sets the level of verbosity
+subcommands:
+    - install:
+        about: Installs a package
