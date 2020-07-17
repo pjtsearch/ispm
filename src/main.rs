@@ -14,12 +14,12 @@ fn main() {
     let cli = load_yaml!("./cli.yaml");
     let matches = App::from_yaml(cli).get_matches();
     let input = PathBuf::from(matches.value_of("INPUT").unwrap_or("./pkg.yaml"));
-    let working_dir = PathBuf::from(matches.value_of("working_dir").unwrap_or("./tmp"));
 
     let yaml_str:&str = &fs::read_to_string(input).expect("Could not read pkg.yaml");
     let yaml = &YamlLoader::load_from_str(yaml_str).expect("Could not parse pkg")[0];
     let mut pkg = Pkg::from(yaml);
-    if let Some(_matches) = matches.subcommand_matches("install") {
+    if let Some(matches) = matches.subcommand_matches("install") {
+        let working_dir = PathBuf::from(matches.value_of("working_dir").unwrap_or("./tmp"));
         install(&mut pkg, working_dir);
     }
 }
