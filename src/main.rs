@@ -1,11 +1,15 @@
 extern crate yaml_rust;
 extern crate clap;
+extern crate jfs;
+#[macro_use]
+extern crate serde_derive;
 use clap::{App, load_yaml};
 use std::path::PathBuf;
 use crate::pkg::Pkg;
 use yaml_rust::{YamlLoader};
 use std::fs;
 mod pkg;
+mod pkgregistry;
 mod shcmd;
 mod traits;
 mod utils;

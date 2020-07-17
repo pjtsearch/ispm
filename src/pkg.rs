@@ -1,3 +1,4 @@
+use crate::pkgregistry::PkgReg;
 use std::path::PathBuf;
 use crate::utils::if_some::if_some;
 use crate::shcmd::ShCmd;
@@ -82,6 +83,16 @@ impl Pkg {
     pub fn with_uninstall(&mut self,uninstall:ShCmd) -> &mut Pkg {
         self.uninstall = Some(uninstall);
         self
+    }
+}
+
+impl From<PkgReg> for Pkg {
+    fn from(reg:PkgReg) -> Pkg {
+        let mut pkg_obj = Pkg::default();
+        pkg_obj
+            .with_name(&reg.name)
+            .with_version(&reg.version);
+        pkg_obj
     }
 }
 
