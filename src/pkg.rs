@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use crate::utils::if_some::if_some;
 use crate::shcmd::ShCmd;
 use crate::traits::runnable::RunErr;
@@ -13,7 +14,7 @@ pub struct Source {
 }
 
 impl Source {
-    fn download(&mut self,dir:&str) -> Result<(), RunErr>{
+    fn download(&mut self,dir:std::path::PathBuf) -> Result<(), RunErr>{
         let mut cmds = Vec::new();
         cmds.push(ShCmd::from("rm -rf ./*"));
         cmds.push(ShCmd::from(format!("wget -O ./src.archive {}",self.url)));
@@ -37,16 +38,16 @@ pub struct Pkg {
 }
 
 impl Pkg {
-    pub fn download(&mut self,working_dir:&str) -> Result<(), RunErr> {
-        self.source.as_mut().expect("source section required for download").download(working_dir)
+    pub fn download(&mut self,working_dir:PathBuf) -> Result<(), RunErr> {
+        self.source.as_mut().expect("source section required for download").download(working_dir.clone())
     }
-    pub fn build(&mut self,working_dir:&str) -> Result<(), RunErr> {
-        self.download(working_dir).expect("source download required for building");
-        self.build.as_mut().expect("build section required for building").run(&format!("{}/src",working_dir))
+    pub fn build(&mut self,working_dir:PathBuf) -> Result<(), RunErr> {
+        self.download(working_dir.clone()).expect("source download required for building");
+        self.build.as_mut().expect("build section required for building").run(working_dir.clone().join("src"))
     }
-    pub fn install(&mut self,working_dir:&str) -> Result<(), RunErr>{
-        self.build(working_dir).expect("build section required for install");
-        self.install.as_mut().expect("install section required for installing").run(&format!("{}/src",working_dir))
+    pub fn install(&mut self,working_dir:PathBuf) -> Result<(), RunErr>{
+        self.build(working_dir.clone()).expect("build section required for install");
+        self.install.as_mut().expect("install section required for installing").run(working_dir.clone().join("src"))
     }
     pub fn with_name(&mut self,name:&str) -> &mut Pkg {
         self.name = Some(name.to_string());
