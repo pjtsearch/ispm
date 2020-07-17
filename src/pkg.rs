@@ -52,6 +52,9 @@ impl Pkg {
         self.build(working_dir.clone()).expect("build section required for install");
         self.install.as_mut().expect("install section required for installing").run(working_dir.clone().join("src"))
     }
+    pub fn uninstall(&mut self) -> Result<(), RunErr> {
+        self.uninstall.as_mut().expect("install section required for installing").run(PathBuf::from("/"))
+    }
     pub fn with_name(&mut self,name:&str) -> &mut Pkg {
         self.name = Some(name.to_string());
         self

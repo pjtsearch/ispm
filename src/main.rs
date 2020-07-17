@@ -22,8 +22,15 @@ fn main() {
         let working_dir = PathBuf::from(matches.value_of("working_dir").unwrap_or("./tmp"));
         install(&mut pkg, working_dir);
     }
+    if let Some(_matches) = matches.subcommand_matches("uninstall") {
+        uninstall(&mut pkg);
+    }
 }
 
 fn install(pkg:&mut Pkg, working_dir:PathBuf) {
     pkg.install(working_dir).unwrap();
+}
+
+fn uninstall(pkg:&mut Pkg) {
+    pkg.uninstall().unwrap();
 }

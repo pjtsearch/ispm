@@ -20,3 +20,5 @@ subcommands:
                 value_name: DIR
                 help: Sets a custom working directory
                 takes_value: true
+    - uninstall:
+        about: Uninstalls a package
