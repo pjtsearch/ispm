@@ -13,13 +13,13 @@ pub struct Source {
 }
 
 impl Source {
-    fn download(&mut self,dir:String) -> Result<(), RunErr>{
+    fn download(&mut self,dir:&str) -> Result<(), RunErr>{
         let mut cmds = Vec::new();
-        cmds.push(ShCmd::new("rm -rf ./*".to_string()));
-        cmds.push(ShCmd::new(format!("wget -O ./src.archive {}",self.url)));
+        cmds.push(ShCmd::from("rm -rf ./*"));
+        cmds.push(ShCmd::from(format!("wget -O ./src.archive {}",self.url)));
         match &self.variant {
             SourceVariant::TAR => 
-                cmds.push(ShCmd::new("tar -xf ./src.archive --one-top-level=./src  --strip-components=1".to_string()))
+                cmds.push(ShCmd::from("tar -xf ./src.archive --one-top-level=./src  --strip-components=1"))
         };
         ShCmd::from(cmds).run(dir)
     }
@@ -37,16 +37,16 @@ pub struct Pkg {
 
 impl Pkg {
     pub fn install(&mut self,working_dir:&str) -> Result<(), RunErr>{
-        self.source.as_mut().expect("source required for install").download(working_dir.to_string())?;
-        self.build.as_mut().expect("build section required for install").run(format!("{}/src",working_dir))?;
+        self.source.as_mut().expect("source required for install").download(working_dir)?;
+        self.build.as_mut().expect("build section required for install").run(&format!("{}/src",working_dir))?;
         Ok(())
     }
-    pub fn with_name(&'_ mut self,name:String) -> &'_ mut Pkg {
-        self.name = Some(name);
+    pub fn with_name(&'_ mut self,name:&str) -> &'_ mut Pkg {
+        self.name = Some(name.to_string());
         self
     }
-    pub fn with_version(&'_ mut self,version:String) -> &'_ mut Pkg {
-        self.version = Some(version);
+    pub fn with_version(&'_ mut self,version:&str) -> &'_ mut Pkg {
+        self.version = Some(version.to_string());
         self
     }
     pub fn with_source(&'_ mut self,source:Source) -> &'_ mut Pkg {
@@ -72,12 +72,12 @@ impl From<&yaml_rust::Yaml> for Pkg {
         let mut pkg_obj = Pkg::default();
         let name = yaml["name"].as_str();
         if_some(name,|name|{ 
-            pkg_obj.with_name(name.to_string()); 
+            pkg_obj.with_name(name); 
         });
 
         let version = yaml["version"].as_str();
         if_some(version,|version|{ 
-            pkg_obj.with_version(version.to_string()); 
+            pkg_obj.with_version(version); 
         });
 
         let source = yaml["source"].as_str();

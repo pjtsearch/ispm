@@ -1,5 +1,5 @@
 pub trait Runnable {
-    fn run(&mut self, dir:String) -> Result<(), RunErr>;
+    fn run(&mut self, dir:&str) -> Result<(), RunErr>;
 }
 #[derive(Debug, Clone)]
 pub struct RunErr {
