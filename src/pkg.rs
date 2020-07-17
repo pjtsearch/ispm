@@ -39,6 +39,9 @@ pub struct Pkg {
 
 impl Pkg {
     pub fn download(&mut self,working_dir:PathBuf) -> Result<(), RunErr> {
+        if_some(self.pre_source.as_mut(),|pre_source|{
+            pre_source.run(working_dir.clone()).expect("error running pre source");
+        });
         self.source.as_mut().expect("source section required for download").download(working_dir.clone())
     }
     pub fn build(&mut self,working_dir:PathBuf) -> Result<(), RunErr> {
