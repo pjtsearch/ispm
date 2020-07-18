@@ -10,6 +10,7 @@ use crate::shcmd::ShCmd;
 use crate::traits::runnable::RunErr;
 use crate::traits::runnable::Runnable;
 use crate::traits::kvstore::KVStore;
+use log::{info};
 
 #[derive(Default)]
 pub struct Pkg {
@@ -39,6 +40,10 @@ impl Pkg {
             .run()
     }
     pub fn install(&mut self,working_dir:PathBuf,registry:PkgRegistry) -> Result<(), RunErr>{
+        if registry.has(required("name",self.name.clone())){
+            info!("skipping {} because already installed",required("name",self.name.clone()));
+            return Ok(())
+        }
         self.build(working_dir.clone())?;
         required("install section",self.install.as_mut())
             .env("DESTDIR",&path_to_str(working_dir.join("install")))

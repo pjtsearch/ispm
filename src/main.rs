@@ -3,6 +3,7 @@ extern crate clap;
 extern crate jfs;
 #[macro_use]
 extern crate serde_derive;
+use env_logger::Env;
 use clap::{App, load_yaml};
 use std::path::PathBuf;
 use crate::pkg::Pkg;
@@ -17,6 +18,10 @@ mod utils;
 mod source;
 
 fn main() {
+    env_logger::from_env(Env::default().default_filter_or("info"))
+        .format_timestamp(None)
+        .init();
+
     let cli = load_yaml!("./cli.yaml");
     let matches = App::from_yaml(cli).get_matches();
     let input = PathBuf::from(matches.value_of("INPUT").unwrap_or("./pkg.yaml"));
