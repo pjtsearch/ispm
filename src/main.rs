@@ -14,6 +14,7 @@ mod pkgregistry;
 mod shcmd;
 mod traits;
 mod utils;
+mod source;
 
 fn main() {
     let cli = load_yaml!("./cli.yaml");
