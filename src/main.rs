@@ -6,6 +6,7 @@ extern crate serde_derive;
 use clap::{App, load_yaml};
 use std::path::PathBuf;
 use crate::pkg::Pkg;
+use crate::pkgregistry::PkgRegistry;
 use yaml_rust::{YamlLoader};
 use std::fs;
 mod pkg;
@@ -24,17 +25,13 @@ fn main() {
     let mut pkg = Pkg::from(yaml);
     if let Some(matches) = matches.subcommand_matches("install") {
         let working_dir = PathBuf::from(matches.value_of("working_dir").unwrap_or("./tmp"));
-        install(&mut pkg, working_dir);
+        let registry = PkgRegistry::new(PathBuf::from(matches.value_of("registry_dir").unwrap_or("./registry")));
+
+        pkg.install(working_dir,registry).expect("installation failed");
     }
     if let Some(_matches) = matches.subcommand_matches("uninstall") {
-        uninstall(&mut pkg);
+        let registry = PkgRegistry::new(PathBuf::from(matches.value_of("registry_dir").unwrap_or("./registry")));
+
+        pkg.uninstall(registry).expect("un-installation failed");
     }
-}
-
-fn install(pkg:&mut Pkg, working_dir:PathBuf) {
-    pkg.install(working_dir).unwrap();
-}
-
-fn uninstall(pkg:&mut Pkg) {
-    pkg.uninstall().unwrap();
 }

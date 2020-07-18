@@ -1,37 +1,33 @@
-use crate::traits::stackstore::StackStore;
+use std::path::PathBuf;
+use crate::traits::kvstore::KVStore;
 use jfs::Store;
-use std::iter::FromIterator;
 
 pub struct PkgRegistry {
     store: Store
 }
 
-#[derive(Serialize,Deserialize,Clone,PartialEq)]
+#[derive(Serialize,Deserialize,Clone,PartialEq,Debug)]
 pub struct PkgReg {
-    pub name:String,
     pub version:String
 }
 
-impl StackStore<PkgReg,PkgReg> for PkgRegistry {
-    fn find(&self,value:PkgReg) -> Option<PkgReg> {
-        let values:Vec<PkgReg> = Vec::from_iter(self.store.all::<PkgReg>().unwrap().values().cloned());
-        let reg = values.iter().find(|val|**val==value).cloned();
-        if let Some(reg) = reg {
-            Some(reg)
-        }else{
-            None
-        }
+impl KVStore<String,PkgReg> for PkgRegistry {
+    fn has(&self,name:String) -> bool {
+        self.get(name).is_ok()
     }
-    fn push(&self,value:PkgReg) -> std::io::Result<String>{
-        self.store.save(&value)
+    fn set(&self,name:String,reg:PkgReg) -> std::io::Result<String>{
+        self.store.save_with_id(&reg, &name)
     }
-    fn delete(&self,id:&str) -> std::io::Result<()>{
-        self.store.delete(id)
+    fn delete(&self,name:String) -> std::io::Result<()>{
+        self.store.delete(&name)
     }
-    fn get(&self,id:&str) -> std::io::Result<PkgReg>{
-        match self.store.get::<PkgReg>(id) {
-            Ok(reg) => Ok(reg),
-            Err(err) => Err(err)
-        }
+    fn get(&self,name:String) -> std::io::Result<PkgReg>{
+        self.store.get::<PkgReg>(&name)
+    }
+}
+
+impl PkgRegistry {
+    pub fn new(path:PathBuf) -> PkgRegistry{
+        PkgRegistry {store:Store::new(path).expect("could not create store")}
     }
 }

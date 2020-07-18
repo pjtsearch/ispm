@@ -1,4 +1,5 @@
-version: 1.0.0
+version: "1.37"
+name: libgpg-error
 source: "https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.37.tar.bz2"
 pre_source:
   - echo "pre_source"

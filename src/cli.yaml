@@ -20,5 +20,18 @@ subcommands:
                 value_name: DIR
                 help: Sets a custom working directory
                 takes_value: true
+            - registry_dir:
+                short: r
+                long: rdir
+                value_name: DIR
+                help: Sets a custom registry directory
+                takes_value: true
     - uninstall:
         about: Uninstalls a package
+        args:
+            - registry_dir:
+                short: r
+                long: rdir
+                value_name: DIR
+                help: Sets a custom registry directory
+                takes_value: true

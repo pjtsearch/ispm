@@ -8,10 +8,13 @@ pub struct ShCmd {
 
 impl Runnable for ShCmd {
     fn run(&mut self,dir:std::path::PathBuf) -> Result<(), RunErr> {
-        let output = Command::new("sh").current_dir(dir).arg("-c").arg(self.command.clone()).status();
+        if !dir.exists() {
+            Command::new("mkdir").arg(&dir).status()?;
+        }
+        let output = Command::new("sh").current_dir(&dir).arg("-c").arg(self.command.clone()).status();
         match output {
             Ok(_output) => Ok(()),
-            Err(error) => Err(RunErr{message:error.to_string()})
+            Err(error) => Err(RunErr{message:format!("failed running '{}': {}",self.command,error)})
         }
     }
 }
