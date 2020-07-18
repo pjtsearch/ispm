@@ -1,0 +1,18 @@
+version: "0.2.2"
+name: libyaml
+source: "https://github.com/yaml/libyaml/archive/0.2.2/libyaml-dist-0.2.2.tar.gz"
+deps: 
+  - libgpg-error
+pre_source:
+  - echo "pre_source"
+build:
+  - ./bootstrap                                
+  - ./configure --prefix=/usr --disable-static
+  - make
+install:
+  - echo "install"
+  - printenv|grep DESTDIR
+  - make install &&
+    install -v -m644 -D README $DESTDIR/usr/share/doc/libgpg-error-1.37/README
+uninstall:
+  - echo "uninstall"

@@ -1,3 +1,4 @@
+use crate::utils::find_pkgbuild::find_pkgbuild;
 use crate::utils::list_dir::list_dir;
 use crate::utils::required::required;
 use crate::source::{Source,SourceVariant};
@@ -10,11 +11,11 @@ use crate::shcmd::ShCmd;
 use crate::traits::runnable::RunErr;
 use crate::traits::runnable::Runnable;
 use crate::traits::kvstore::KVStore;
-use log::{info};
 
 #[derive(Default)]
 pub struct Pkg {
     pub name: Option<String>,
+    pub deps: Option<Vec<Pkg>>,
     pub version: Option<String>,
     pub source: Option<Source>,
     pub pre_source: Option<ShCmd>,
@@ -39,11 +40,19 @@ impl Pkg {
             .dir(working_dir.join("src"))
             .run()
     }
+    pub fn install_deps(&mut self,working_dir:PathBuf,registry:PkgRegistry) -> Result<(), RunErr>{
+        required("deps section",self.deps.as_mut()).iter_mut().for_each(move |dep|{
+            dep.install(working_dir.clone(),registry.clone()).expect("failed installing dep");
+        });
+        Ok(())
+    }
     pub fn install(&mut self,working_dir:PathBuf,registry:PkgRegistry) -> Result<(), RunErr>{
-        if registry.has(required("name",self.name.clone())){
-            info!("skipping {} because already installed",required("name",self.name.clone()));
-            return Ok(())
-        }
+        //TODO: readd
+        // if registry.has(required("name",self.name.clone())){
+        //     info!("skipping {} because already installed",required("name",self.name.clone()));
+        //     return Ok(())
+        // }
+        self.install_deps(working_dir.clone(),registry.clone())?;
         self.build(working_dir.clone())?;
         required("install section",self.install.as_mut())
             .env("DESTDIR",&path_to_str(working_dir.join("install")))
@@ -82,6 +91,10 @@ impl Pkg {
         self.source = Some(source);
         self
     }
+    pub fn with_deps(&mut self,deps:Vec<Pkg>) -> &mut Pkg {
+        self.deps = Some(deps);
+        self
+    }
     pub fn with_pre_source(&mut self,pre_source:ShCmd) -> &mut Pkg {
         self.pre_source = Some(pre_source);
         self
@@ -116,6 +129,16 @@ impl From<&yaml_rust::Yaml> for Pkg {
         let source = yaml["source"].as_str();
         if_some(source,|source|{ 
             pkg_obj.with_source(Source {url:source.to_string(),variant:SourceVariant::TAR}); 
+        });
+
+        let deps = yaml["deps"].as_vec();
+        if_some(deps,|deps|{ 
+            pkg_obj.with_deps(deps
+                .iter()
+                .map(yaml_rust::Yaml::as_str)
+                .map(Option::unwrap)
+                .map(|name|find_pkgbuild(PathBuf::from("./"),name))
+                .collect::<Vec<Pkg>>()); 
         });
 
         let pre_source = yaml["pre_source"].as_vec();

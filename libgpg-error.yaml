@@ -1,6 +1,7 @@
 version: "1.37"
 name: libgpg-error
 source: "https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.37.tar.bz2"
+deps: []
 pre_source:
   - echo "pre_source"
 build:

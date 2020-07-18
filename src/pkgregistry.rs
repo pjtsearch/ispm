@@ -2,6 +2,7 @@ use std::path::PathBuf;
 use crate::traits::kvstore::KVStore;
 use jfs::Store;
 
+#[derive(Clone)]
 pub struct PkgRegistry {
     store: Store
 }
