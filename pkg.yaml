@@ -5,6 +5,7 @@ pre_source:
   - echo "pre_source"
 build:
   - echo "build"
+  - printenv|grep DESTDIR
 install:
   - echo "install"
   - printenv|grep DESTDIR

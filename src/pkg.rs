@@ -55,6 +55,7 @@ impl Pkg {
         self.download(working_dir.clone())?;
         self.build.as_mut()
             .expect("build section required for building")
+            .env("DESTDIR",&working_dir.clone().join("install").into_os_string().into_string().unwrap())
             .dir(working_dir.clone().join("src"))
             .run()
     }
@@ -63,7 +64,7 @@ impl Pkg {
         self.install.as_mut()
             .expect("install section required for installing")
             .env("DESTDIR",&working_dir.clone().join("install").into_os_string().into_string().unwrap())
-            .dir(working_dir.clone().join("build"))
+            .dir(working_dir.clone().join("src"))
             .run()?;
             
         registry.set(
