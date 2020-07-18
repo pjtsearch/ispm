@@ -50,13 +50,13 @@ impl Pkg {
         }
         self.source.as_mut()
             .expect("source section required for download")
-            .download(working_dir.clone())
+            .download(working_dir)
     }
     pub fn build(&mut self,working_dir:PathBuf) -> Result<(), RunErr> {
         self.download(working_dir.clone())?;
         self.build.as_mut()
             .expect("build section required for building")
-            .dir(working_dir.clone().join("src"))
+            .dir(working_dir.join("src"))
             .run()
     }
     pub fn install(&mut self,working_dir:PathBuf,registry:PkgRegistry) -> Result<(), RunErr>{
@@ -64,7 +64,7 @@ impl Pkg {
         self.install.as_mut()
             .expect("install section required for installing")
             .env("DESTDIR",&path_to_str(working_dir.clone().join("install")))
-            .dir(working_dir.clone().join("src"))
+            .dir(working_dir.join("src"))
             .run()?;
             
         registry.set(
