@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use crate::traits::runnable::RunErr;
 use crate::traits::runnable::Runnable;
 use std::process::Command;
+use std::fs;
 
 pub struct ShCmd {
     pub command: String,
@@ -16,7 +17,6 @@ impl Runnable<ShCmd> for ShCmd {
             .current_dir(&self.dir.clone().unwrap())
             .arg("-c")
             .arg(self.command.clone())
-            .env_clear()
             .envs(&self.env)
             .status();
         match output {
@@ -26,7 +26,7 @@ impl Runnable<ShCmd> for ShCmd {
     }
     fn dir(&mut self,dir:PathBuf) -> &mut ShCmd {
         if !dir.exists() {
-            Command::new("mkdir").arg(&dir).status().expect("could not set dir");
+            fs::create_dir_all(&dir).expect("could not create dir");
         }
         self.dir = Some(dir);
         self

@@ -6,8 +6,12 @@ pre_source:
 build:
   - echo "build"
   - printenv|grep DESTDIR
+  - ./configure --prefix=/usr
+  - make
 install:
   - echo "install"
   - printenv|grep DESTDIR
+  - make install &&
+    install -v -m644 -D README $DESTDIR/usr/share/doc/libgpg-error-1.37/README
 uninstall:
   - echo "uninstall"

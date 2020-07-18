@@ -1,3 +1,4 @@
+use crate::utils::path_to_str::path_to_str;
 use crate::pkgregistry::PkgReg;
 use crate::pkgregistry::PkgRegistry;
 use std::path::PathBuf;
@@ -55,7 +56,6 @@ impl Pkg {
         self.download(working_dir.clone())?;
         self.build.as_mut()
             .expect("build section required for building")
-            .env("DESTDIR",&working_dir.clone().join("install").into_os_string().into_string().unwrap())
             .dir(working_dir.clone().join("src"))
             .run()
     }
@@ -63,7 +63,7 @@ impl Pkg {
         self.build(working_dir.clone())?;
         self.install.as_mut()
             .expect("install section required for installing")
-            .env("DESTDIR",&working_dir.clone().join("install").into_os_string().into_string().unwrap())
+            .env("DESTDIR",&path_to_str(working_dir.clone().join("install")))
             .dir(working_dir.clone().join("src"))
             .run()?;
             
