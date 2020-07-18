@@ -24,5 +24,8 @@ pub fn list_dir(dir:PathBuf) -> Result<Vec<PathBuf>,Error>{
         entries.push(entry.path())
     };
     visit_dir(&dir,&mut cb)?;
-    Ok(entries)
+    Ok(entries.iter().map(|path|
+             path.strip_prefix(dir.clone()).unwrap().to_path_buf()
+        ).collect()
+    )
 }

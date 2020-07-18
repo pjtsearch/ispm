@@ -1,3 +1,5 @@
+use crate::utils::list_dir::list_dir;
+use crate::utils::required::required;
 use crate::source::{Source,SourceVariant};
 use crate::utils::path_to_str::path_to_str;
 use crate::pkgregistry::PkgReg;
@@ -27,38 +29,39 @@ impl Pkg {
                 .dir(working_dir.clone())
                 .run()?;
         }
-        self.source.as_mut()
-            .expect("source section required for download")
+        required("source section",self.source.as_mut())
             .download(working_dir)
     }
     pub fn build(&mut self,working_dir:PathBuf) -> Result<(), RunErr> {
         self.download(working_dir.clone())?;
-        self.build.as_mut()
-            .expect("build section required for building")
+        required("build section",self.build.as_mut())
             .dir(working_dir.join("src"))
             .run()
     }
     pub fn install(&mut self,working_dir:PathBuf,registry:PkgRegistry) -> Result<(), RunErr>{
         self.build(working_dir.clone())?;
-        self.install.as_mut()
-            .expect("install section required for installing")
-            .env("DESTDIR",&path_to_str(working_dir.clone().join("install")))
+        required("install section",self.install.as_mut())
+            .env("DESTDIR",&path_to_str(working_dir.join("install")))
             .dir(working_dir.join("src"))
             .run()?;
             
         registry.set(
-            self.name.clone().expect("must have name"),
-            PkgReg {version:self.version.clone().expect("must have version")}
+            required("name",self.name.clone()),
+            PkgReg {
+                version:required("version",self.version.clone()),
+                files:list_dir(
+                    working_dir.join("install")
+                )?
+            }
         ).expect("could not access registry");
         Ok(())
     }
     pub fn uninstall(&mut self,registry:PkgRegistry) -> Result<(), RunErr> {
-        self.uninstall.as_mut()
-            .expect("uninstall section required for uninstalling")
+        required("uninstall section",self.uninstall.as_mut())
             .dir(PathBuf::from("/"))
             .run()?;
         registry.delete(
-            self.name.clone().expect("must have name")
+            required("name",self.name.clone())
         ).expect("could not access registry");
         Ok(())
     }

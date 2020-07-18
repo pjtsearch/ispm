@@ -8,7 +8,8 @@ pub struct PkgRegistry {
 
 #[derive(Serialize,Deserialize,Clone,PartialEq,Debug)]
 pub struct PkgReg {
-    pub version:String
+    pub version:String,
+    pub files:Vec<PathBuf>
 }
 
 impl KVStore<String,PkgReg> for PkgRegistry {
