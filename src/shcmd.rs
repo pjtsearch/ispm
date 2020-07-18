@@ -1,20 +1,49 @@
+use std::collections::HashMap;
+use std::path::PathBuf;
 use crate::traits::runnable::RunErr;
 use crate::traits::runnable::Runnable;
 use std::process::Command;
 
 pub struct ShCmd {
-    pub command: String
+    pub command: String,
+    dir: Option<PathBuf>,
+    env: HashMap<String,String>
 }
 
-impl Runnable for ShCmd {
-    fn run(&mut self,dir:std::path::PathBuf) -> Result<(), RunErr> {
-        if !dir.exists() {
-            Command::new("mkdir").arg(&dir).status()?;
-        }
-        let output = Command::new("sh").current_dir(&dir).arg("-c").arg(self.command.clone()).status();
+impl Runnable<ShCmd> for ShCmd {
+    fn run(&mut self) -> Result<(), RunErr> {
+        let output = Command::new("sh")
+            .current_dir(&self.dir.clone().unwrap())
+            .arg("-c")
+            .arg(self.command.clone())
+            .env_clear()
+            .envs(&self.env)
+            .status();
         match output {
             Ok(_output) => Ok(()),
             Err(error) => Err(RunErr{message:format!("failed running '{}': {}",self.command,error)})
+        }
+    }
+    fn dir(&mut self,dir:PathBuf) -> &mut ShCmd {
+        if !dir.exists() {
+            Command::new("mkdir").arg(&dir).status().expect("could not set dir");
+        }
+        self.dir = Some(dir);
+        self
+    }
+
+    fn env(&mut self,key:&str,value:&str) -> &mut ShCmd {
+        self.env.insert(key.to_string(), value.to_string());
+        self
+    }
+}
+
+impl ShCmd {
+    fn new(command:String) -> ShCmd {
+        ShCmd {
+            command,
+            dir:None,
+            env: HashMap::new()
         }
     }
 }
@@ -30,25 +59,25 @@ impl From<Vec<ShCmd>> for ShCmd {
         let command = commands.iter()
             .map(|cmd|cmd.command.clone()).collect::<Vec<String>>()
             .join(";\n");
-        ShCmd {command}
+        ShCmd::new(command)
     }
 }
 
 impl From<Vec<&str>> for ShCmd {
     fn from(commands:Vec<&str>) -> ShCmd {
         let command = commands.join(";\n");
-        ShCmd {command}
+        ShCmd::new(command)
     }
 }
 
 impl From<&str> for ShCmd {
     fn from(command:&str) -> ShCmd {
-        ShCmd {command:command.to_string()}
+        ShCmd::new(command.to_string())
     }
 }
 
 impl From<String> for ShCmd {
     fn from(command:String) -> ShCmd {
-        ShCmd {command}
+        ShCmd::new(command)
     }
 }

@@ -7,5 +7,6 @@ build:
   - echo "build"
 install:
   - echo "install"
+  - printenv|grep DESTDIR
 uninstall:
   - echo "uninstall"

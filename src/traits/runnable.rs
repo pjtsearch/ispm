@@ -1,5 +1,9 @@
-pub trait Runnable {
-    fn run(&mut self, dir:std::path::PathBuf) -> Result<(), RunErr>;
+use std::path::PathBuf;
+
+pub trait Runnable <Parent> {
+    fn run(&mut self) -> Result<(), RunErr>;
+    fn dir(&mut self, dir:PathBuf) -> &mut Parent;
+    fn env(&mut self, key:&str, value:&str) -> &mut Parent;
 }
 #[derive(Debug, Clone)]
 pub struct RunErr {

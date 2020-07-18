@@ -25,7 +25,7 @@ impl Source {
             SourceVariant::TAR => 
                 cmds.push(ShCmd::from("tar -xf ./src.archive --one-top-level=./src  --strip-components=1"))
         };
-        ShCmd::from(cmds).run(dir)
+        ShCmd::from(cmds).dir(dir).run()
     }
 }
 
@@ -43,17 +43,29 @@ pub struct Pkg {
 impl Pkg {
     pub fn download(&mut self,working_dir:PathBuf) -> Result<(), RunErr> {
         if let Some(pre_source) = self.pre_source.as_mut() {
-            pre_source.run(working_dir.clone())?;
+            pre_source
+                .dir(working_dir.clone())
+                .run()?;
         }
-        self.source.as_mut().expect("source section required for download").download(working_dir.clone())
+        self.source.as_mut()
+            .expect("source section required for download")
+            .download(working_dir.clone())
     }
     pub fn build(&mut self,working_dir:PathBuf) -> Result<(), RunErr> {
         self.download(working_dir.clone())?;
-        self.build.as_mut().expect("build section required for building").run(working_dir.clone().join("src"))
+        self.build.as_mut()
+            .expect("build section required for building")
+            .dir(working_dir.clone().join("src"))
+            .run()
     }
     pub fn install(&mut self,working_dir:PathBuf,registry:PkgRegistry) -> Result<(), RunErr>{
         self.build(working_dir.clone())?;
-        self.install.as_mut().expect("install section required for installing").run(working_dir.clone().join("install"))?;
+        self.install.as_mut()
+            .expect("install section required for installing")
+            .env("DESTDIR",&working_dir.clone().join("install").into_os_string().into_string().unwrap())
+            .dir(working_dir.clone().join("build"))
+            .run()?;
+            
         registry.set(
             self.name.clone().expect("must have name"),
             PkgReg {version:self.version.clone().expect("must have version")}
@@ -61,7 +73,10 @@ impl Pkg {
         Ok(())
     }
     pub fn uninstall(&mut self,registry:PkgRegistry) -> Result<(), RunErr> {
-        self.uninstall.as_mut().expect("uninstall section required for uninstalling").run(PathBuf::from("/"))?;
+        self.uninstall.as_mut()
+            .expect("uninstall section required for uninstalling")
+            .dir(PathBuf::from("/"))
+            .run()?;
         registry.delete(
             self.name.clone().expect("must have name")
         ).expect("could not access registry");
