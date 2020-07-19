@@ -3,6 +3,7 @@ extern crate clap;
 extern crate jfs;
 #[macro_use]
 extern crate serde_derive;
+use crate::utils::dep_tree::map_tree;
 use ego_tree::NodeMut;
 use ego_tree::NodeRef;
 use crate::utils::dep_tree::dep_tree;
