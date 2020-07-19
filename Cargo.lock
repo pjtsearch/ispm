@@ -71,10 +71,7 @@ dependencies = [
  "ego-tree",
  "env_logger",
  "ipsm-lib",
- "jfs",
  "log",
- "serde",
- "serde_derive",
  "yaml-rust 0.4.4",
 ]
 

@@ -1,13 +1,13 @@
 extern crate yaml_rust;
 extern crate clap;
-extern crate jfs;
-#[macro_use]
-extern crate serde_derive;
+use crate::utils::dep_tree::map_tree;
+use crate::utils::dep_tree::dep_tree;
 use env_logger::Env;
 use clap::{App, load_yaml};
 use std::path::PathBuf;
 use ipsm_lib::pkg::Pkg;
 use ipsm_lib::pkgregistry::PkgRegistry;
+use ipsm_lib::traits::kvstore::KVStore;
 use yaml_rust::{YamlLoader};
 use std::fs;
 mod utils;

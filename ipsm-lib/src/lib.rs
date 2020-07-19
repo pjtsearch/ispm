@@ -6,4 +6,4 @@ pub mod pkgregistry;
 pub mod shcmd;
 pub mod source;
 mod utils;
-mod traits;
+pub mod traits;
