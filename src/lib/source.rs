@@ -1,4 +1,4 @@
-use crate::shcmd::ShCmd;
+use crate::lib::shcmd::ShCmd;
 use crate::traits::runnable::Runnable;
 use crate::traits::runnable::RunErr;
 

@@ -10,16 +10,13 @@ use crate::utils::dep_tree::dep_tree;
 use env_logger::Env;
 use clap::{App, load_yaml};
 use std::path::PathBuf;
-use crate::pkg::Pkg;
-use crate::pkgregistry::PkgRegistry;
+use crate::lib::pkg::Pkg;
+use crate::lib::pkgregistry::PkgRegistry;
 use yaml_rust::{YamlLoader};
 use std::fs;
-mod pkg;
-mod pkgregistry;
-mod shcmd;
 mod traits;
 mod utils;
-mod source;
+mod lib;
 
 fn main() {
     env_logger::from_env(Env::default().default_filter_or("info"))

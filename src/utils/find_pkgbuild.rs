@@ -1,4 +1,4 @@
-use crate::pkg::Pkg;
+use crate::lib::pkg::Pkg;
 use std::path::PathBuf;
 use yaml_rust::{YamlLoader};
 

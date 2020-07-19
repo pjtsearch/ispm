@@ -1,7 +1,7 @@
 use ego_tree::NodeRef;
 use ego_tree::NodeMut;
 use crate::utils::required::required;
-use crate::pkg::Pkg;
+use crate::lib::pkg::Pkg;
 use ego_tree::Tree;
 
 pub fn dep_tree(pkg:Pkg) -> Tree<Pkg> {
