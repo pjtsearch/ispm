@@ -1,6 +1,6 @@
 use crate::lib::shcmd::ShCmd;
-use crate::traits::runnable::Runnable;
-use crate::traits::runnable::RunErr;
+use crate::lib::traits::runnable::Runnable;
+use crate::lib::traits::runnable::RunErr;
 
 #[derive(Clone,Debug)]
 pub enum SourceVariant {

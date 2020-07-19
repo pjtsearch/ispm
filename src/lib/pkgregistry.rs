@@ -1,5 +1,5 @@
 use std::path::PathBuf;
-use crate::traits::kvstore::KVStore;
+use crate::lib::traits::kvstore::KVStore;
 use jfs::Store;
 
 #[derive(Clone)]

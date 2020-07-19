@@ -3,10 +3,6 @@ extern crate clap;
 extern crate jfs;
 #[macro_use]
 extern crate serde_derive;
-use crate::utils::dep_tree::map_tree;
-use ego_tree::NodeMut;
-use ego_tree::NodeRef;
-use crate::utils::dep_tree::dep_tree;
 use env_logger::Env;
 use clap::{App, load_yaml};
 use std::path::PathBuf;
@@ -14,7 +10,6 @@ use crate::lib::pkg::Pkg;
 use crate::lib::pkgregistry::PkgRegistry;
 use yaml_rust::{YamlLoader};
 use std::fs;
-mod traits;
 mod utils;
 mod lib;
 
