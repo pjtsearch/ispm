@@ -5,6 +5,7 @@ use crate::traits::runnable::Runnable;
 use std::process::Command;
 use std::fs;
 
+#[derive(Clone,Debug)]
 pub struct ShCmd {
     pub command: String,
     dir: Option<PathBuf>,

@@ -2,10 +2,12 @@ use crate::shcmd::ShCmd;
 use crate::traits::runnable::Runnable;
 use crate::traits::runnable::RunErr;
 
+#[derive(Clone,Debug)]
 pub enum SourceVariant {
     TAR
 }
 
+#[derive(Clone,Debug)]
 pub struct Source {
     pub url: String,
     pub variant: SourceVariant,

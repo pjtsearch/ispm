@@ -3,6 +3,9 @@ extern crate clap;
 extern crate jfs;
 #[macro_use]
 extern crate serde_derive;
+use ego_tree::NodeMut;
+use ego_tree::NodeRef;
+use crate::utils::dep_tree::dep_tree;
 use env_logger::Env;
 use clap::{App, load_yaml};
 use std::path::PathBuf;

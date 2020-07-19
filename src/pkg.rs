@@ -12,7 +12,7 @@ use crate::traits::runnable::RunErr;
 use crate::traits::runnable::Runnable;
 use crate::traits::kvstore::KVStore;
 
-#[derive(Default)]
+#[derive(Default,Clone,Debug)]
 pub struct Pkg {
     pub name: Option<String>,
     pub deps: Option<Vec<Pkg>>,
