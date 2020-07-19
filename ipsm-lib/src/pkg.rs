@@ -1,14 +1,14 @@
-use crate::lib::utils::list_dir::list_dir;
-use crate::lib::utils::required::required;
-use crate::lib::source::{Source};
-use crate::lib::utils::path_to_str::path_to_str;
-use crate::lib::pkgregistry::PkgReg;
-use crate::lib::pkgregistry::PkgRegistry;
+use crate::utils::list_dir::list_dir;
+use crate::utils::required::required;
+use crate::source::{Source};
+use crate::utils::path_to_str::path_to_str;
+use crate::pkgregistry::PkgReg;
+use crate::pkgregistry::PkgRegistry;
 use std::path::PathBuf;
-use crate::lib::shcmd::ShCmd;
-use crate::lib::traits::runnable::RunErr;
-use crate::lib::traits::runnable::Runnable;
-use crate::lib::traits::kvstore::KVStore;
+use crate::shcmd::ShCmd;
+use crate::traits::runnable::RunErr;
+use crate::traits::runnable::Runnable;
+use crate::traits::kvstore::KVStore;
 
 #[derive(Default,Clone,Debug)]
 pub struct Pkg {

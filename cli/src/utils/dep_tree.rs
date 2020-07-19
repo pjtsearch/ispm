@@ -1,6 +1,6 @@
 use ego_tree::NodeRef;
 use ego_tree::NodeMut;
-use crate::lib::pkg::Pkg;
+use ipsm_lib::pkg::Pkg;
 use ego_tree::Tree;
 
 pub fn dep_tree(pkg:Pkg) -> Tree<Pkg> {

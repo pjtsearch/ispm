@@ -64,21 +64,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cli"
-version = "0.1.0"
-dependencies = [
- "clap",
- "ego-tree",
- "env_logger",
- "ipsm-lib",
- "jfs",
- "log",
- "serde",
- "serde_derive",
- "yaml-rust 0.4.4",
-]
-
-[[package]]
 name = "cloudabi"
 version = "0.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -141,11 +126,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "ipsm-lib"
+name = "ipsm"
 version = "0.1.0"
 dependencies = [
+ "clap",
  "ego-tree",
+ "env_logger",
  "jfs",
+ "log",
  "serde",
  "serde_derive",
  "yaml-rust 0.4.4",

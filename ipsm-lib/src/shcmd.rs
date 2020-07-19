@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
-use crate::lib::traits::runnable::RunErr;
-use crate::lib::traits::runnable::Runnable;
+use crate::traits::runnable::RunErr;
+use crate::traits::runnable::Runnable;
 use std::process::Command;
 use std::fs;
 
