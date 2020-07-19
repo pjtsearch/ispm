@@ -1,5 +1,6 @@
 extern crate yaml_rust;
 extern crate clap;
+use crate::utils::trans_sum::trans_sum;
 use env_logger::Env;
 use clap::{App, load_yaml};
 use std::path::PathBuf;
@@ -26,7 +27,7 @@ fn main() {
     if let Some(matches) = matches.subcommand_matches("install") {
         let working_dir = PathBuf::from(matches.value_of("working_dir").unwrap_or("./tmp"));
         let registry = PkgRegistry::new(PathBuf::from(matches.value_of("registry_dir").unwrap_or("./registry")));
-
+        println!("### Summary: \n{:#?}\n###\n\n",trans_sum(&pkg,&registry));
         pkg.install(working_dir,registry).expect("installation failed");
     }
     if let Some(_matches) = matches.subcommand_matches("uninstall") {
